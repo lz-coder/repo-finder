@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:git/git.dart';
 import 'package:repo_finder/models/repo.dart';
 import 'package:repo_finder/repo_finder.dart' as repo_finder;
-import 'package:path/path.dart' as path;
 
 void main(List<String?> arguments) async {
   final dir = Directory('/home/lzcoder/Projects');
