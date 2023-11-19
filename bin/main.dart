@@ -14,10 +14,8 @@ void main(List<String?> arguments) async {
 
   for (final FileSystemEntity dir in dirList) {
     if (dir is Directory && await GitDir.isGitDir(dir.path)) {
-      Repo? repository = await repo_finder.getRepo(dir.path);
-      if (repository != null) {
-        repos.add(repository);
-      }
+      Repo repository = await repo_finder.getRepo(dir.path);
+      repos.add(repository);
     }
   }
 

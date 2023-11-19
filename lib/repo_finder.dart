@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:git/git.dart';
 import 'package:repo_finder/models/repo.dart';
 
-Future<Repo?> getRepo(String path) async {
+Future<Repo> getRepo(String path) async {
   final String repoName = path.split('/').last;
   List<String>? contributors = [];
 
