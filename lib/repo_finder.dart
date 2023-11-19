@@ -71,7 +71,9 @@ Future<Repo> getRepo(String path) async {
 void showRepo(Repo repo) {
   print('Repo: ${repo.name}');
   print(' > commits: ${repo.commits}');
-  print(' > branches: ${repo.branches}');
+  if (repo.branches != null) {
+    print(' > branches: ${repo.branches}');
+  }
   if (repo.currentBranch != null) {
     print(' > currentBranch: ${repo.currentBranch}');
   }
