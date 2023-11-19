@@ -16,7 +16,7 @@ Future<Repo> getRepo(String path) async {
   Repo repository;
 
   try {
-    gitDir = await GitDir.fromExisting(path);
+    gitDir = await GitDir.fromExisting(path, allowSubdirectory: false);
   } on Exception catch (err) {
     print('[ERROR]: $err');
   }
@@ -78,7 +78,6 @@ void showRepo(Repo repo) {
     print(' > currentBranch: ${repo.currentBranch}');
   }
   if (repo.contributors != null) {
-    print(' > contributors: ${repo.contributors}');
+    print(' > contributors: ${repo.contributors} \n');
   }
-  print('');
 }
