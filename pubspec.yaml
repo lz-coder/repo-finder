@@ -1,0 +1,16 @@
+name: repo_finder
+description: A simple cmd tool that search for git repositories and show infos about that.
+version: 0.1.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.1.5
+
+# Add regular dependencies here.
+dependencies:
+   git: ^2.2.1
+   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
