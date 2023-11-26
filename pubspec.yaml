@@ -8,6 +8,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+   chalkdart: ^2.0.9
    git: ^2.2.1
    path: ^1.8.0
 
