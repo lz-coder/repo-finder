@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:chalkdart/chalk.dart';
+import 'package:chalkdart/chalk_x11.dart';
 import 'package:git/git.dart';
 import 'package:repo_finder/models/repo.dart';
 
@@ -17,8 +19,8 @@ Future<Repo> getRepo(String path) async {
 
   try {
     gitDir = await GitDir.fromExisting(path, allowSubdirectory: false);
-  } on Exception catch (err) {
-    print('[ERROR]: $err');
+  } on ArgumentError {
+    throw ArgumentError();
   }
 
   try {
@@ -69,15 +71,32 @@ Future<Repo> getRepo(String path) async {
 }
 
 void showRepo(Repo repo) {
-  print('Repo: ${repo.name}');
-  print(' > commits: ${repo.commits}');
+  print(chalk.black.onSkyBlue.bold(' Repo: ${repo.name} '));
+  print(' ${chalk.black.onLimeGreen.bold(' commits: ${repo.commits} ')}');
   if (repo.branches != null) {
-    print(' > branches: ${repo.branches}');
+    print(' ${chalk.black.onLimeGreen.bold(' branches: ${repo.branches} ')}');
   }
   if (repo.currentBranch != null) {
-    print(' > currentBranch: ${repo.currentBranch}');
+    print(
+        ' ${chalk.black.onLimeGreen.bold(' currentBranch: ${repo.currentBranch} ')}');
   }
   if (repo.contributors != null) {
-    print(' > contributors: ${repo.contributors} \n');
+    print(
+        ' ${chalk.black.onLimeGreen.bold(' contributors: ${repo.contributors} \n')}');
+  }
+}
+
+Future<void> fetchRepos(Set<Repo> repos, List<FileSystemEntity> dirs) async {
+  for (final FileSystemEntity dirInList in dirs) {
+    if (dirInList is Directory) {
+      if (await GitDir.isGitDir(dirInList.path)) {
+        try {
+          Repo repository = await getRepo(dirInList.path);
+          repos.add(repository);
+        } on ArgumentError {
+          continue;
+        }
+      }
+    }
   }
 }
