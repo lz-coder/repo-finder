@@ -9,16 +9,22 @@ Future<Repo> getRepo(String path) async {
   final String repoName = path.split('/').last;
   List<String>? contributors = [];
 
-  late List<BranchReference>? branches;
-  late BranchReference? currentBranchReference;
-  late final GitDir gitDir;
-  late final Map<String, Commit> commits;
+  List<BranchReference>? branches;
+  BranchReference? currentBranchReference;
+  final GitDir gitDir;
+  final Map<String, Commit> commits;
   late final int commitCount;
+  final ProcessResult status;
+  bool needsAttention = false;
 
   Repo repository;
 
   try {
     gitDir = await GitDir.fromExisting(path, allowSubdirectory: false);
+    status = await gitDir.runCommand(['status']);
+    if (status.stdout.toString().length > 100) {
+      needsAttention = true;
+    }
   } on ArgumentError {
     throw ArgumentError();
   }
@@ -65,6 +71,7 @@ Future<Repo> getRepo(String path) async {
         ? currentBranchReference.branchName
         : null,
     contributors: contributors,
+    attention: needsAttention,
   );
 
   return repository;
@@ -72,18 +79,22 @@ Future<Repo> getRepo(String path) async {
 
 void showRepo(Repo repo) {
   print(chalk.black.onSkyBlue.bold(' Repo: ${repo.name} '));
-  print(' ${chalk.black.onLimeGreen.bold(' commits: ${repo.commits} ')}');
+  print(' ${chalk.black.onWhiteSmoke.bold(' commits: ${repo.commits} ')}');
   if (repo.branches != null) {
-    print(' ${chalk.black.onLimeGreen.bold(' branches: ${repo.branches} ')}');
+    print(' ${chalk.black.onWhiteSmoke.bold(' branches: ${repo.branches} ')}');
   }
   if (repo.currentBranch != null) {
     print(
-        ' ${chalk.black.onLimeGreen.bold(' currentBranch: ${repo.currentBranch} ')}');
+        ' ${chalk.black.onWhiteSmoke.bold(' currentBranch: ${repo.currentBranch} ')}');
   }
   if (repo.contributors != null) {
     print(
-        ' ${chalk.black.onLimeGreen.bold(' contributors: ${repo.contributors} \n')}');
+        ' ${chalk.black.onWhiteSmoke.bold(' contributors: ${repo.contributors} ')}');
   }
+  if (repo.attention) {
+    print(' ${chalk.red.onOrange.bold(' Needs attention ')}');
+  }
+  print('');
 }
 
 Future<void> fetchRepos(Set<Repo> repos, List<FileSystemEntity> dirs) async {

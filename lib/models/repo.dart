@@ -6,6 +6,7 @@ class Repo {
     required this.branches,
     this.currentBranch,
     required this.contributors,
+    required this.attention,
   });
   final String name;
   final String dir;
@@ -13,4 +14,5 @@ class Repo {
   final List<String>? branches;
   final String? currentBranch;
   final List<String>? contributors;
+  final bool attention;
 }
