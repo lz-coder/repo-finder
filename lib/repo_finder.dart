@@ -21,10 +21,7 @@ Future<Repo> getRepo(String path) async {
 
   try {
     gitDir = await GitDir.fromExisting(path, allowSubdirectory: false);
-    status = await gitDir.runCommand(['status']);
-    if (status.stdout.toString().length > 100) {
-      needsAttention = true;
-    }
+    status = await gitDir.runCommand(['status'], echoOutput: false);
   } on ArgumentError {
     throw ArgumentError();
   }
@@ -54,6 +51,13 @@ Future<Repo> getRepo(String path) async {
     }
   } on ProcessException {
     contributors = null;
+  }
+
+  final int? currentBranchLength = currentBranchReference?.branchName.length;
+  if (currentBranchLength != null) {
+    if (status.stdout.toString().length - currentBranchLength > 110) {
+      needsAttention = true;
+    }
   }
 
   repository = Repo(
